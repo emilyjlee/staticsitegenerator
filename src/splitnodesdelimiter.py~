@@ -1,0 +1,27 @@
+from textnode import TextNode, TextType
+def split_nodes_delimiter(old_nodes, delimiter, text_type):
+    new_nodes = []
+    for node in old_nodes:
+        textlist = node.text.split(delimiter)
+        separated_nodes =[]
+        if node.text_type != TextType.TEXT or delimiter not in node.text:
+            new_nodes.append(node)
+        elif node.text_type == TextType.TEXT and node.text.count(delimiter) % 2 != 0:
+            raise Exception("invalid markdown syntax")
+        elif delimiter in node.text.split()[0]:
+            for i in range(0, len(textlist), 2):
+                if i % 2 == 0:
+                    separated_nodes.append(TextNode(textlist[i], text_type))
+                separated_nodes.append(TextNode(textlist[i], TextType.TEXT))
+        else:
+            for i in range(0, len(textlist), 2):
+                if i % 2 == 0:
+                    separated_nodes.append(TextNode(textlist[i], TextType.TEXT))
+                separated_nodes.append(TextNode(textlist[i], text_type))
+        new_nodes.extend(separated_nodes)
+    return new_nodes
+# need to handle **bold**, _italics_, `code`...
+# if no matching closing delimiter, raise exception about invalid markdown syntax. count occurences in string?
+# order to check for different delimiters matters
+# recursion in order to handle a node with multiple instances "**bold**, _italic_, `code`"
+# recursion in order to handle a node with different instances "this is **bolded**, this is also **bolded**"
