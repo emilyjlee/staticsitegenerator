@@ -1,4 +1,6 @@
 from textnode import TextNode, TextType
+import re
+
 def split_nodes_delimiter(old_nodes, delimiter, text_type):
     new_nodes = []
     for old_node in old_nodes:
@@ -18,6 +20,14 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
                 split_nodes.append(TextNode(sections[i], text_type))
         new_nodes.extend(split_nodes)
     return new_nodes
+
+def extract_markdown_images(text):
+    return re.findall(r"\!\[(.*?)\]\((.*?)\)", text)
+
+def extract_markdown_links(text):
+    return re.findall(r"[^!]\[(.*?)\]\((.*?)\)", text)
+# zipmap -- one list for alt text, one for urls
+
 # need to handle **bold**, _italics_, `code`...
 # if no matching closing delimiter, raise exception about invalid markdown syntax. count occurences in string?
 # order to check for different delimiters matters
